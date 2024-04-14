@@ -58,6 +58,15 @@ class Zombie_problem(object):
             cost += max(cost_list)
                     
         return cost
+    
+    def heuristic(self, node):
+        """Returns the heuristic value of `node`""" 
+        current_state = node  
+        h = 0
+        for i in range(len(current_state)-1): 
+            if current_state[i] == 'left': # for all persons on left check their estimate cost to move to right            
+                    h += self.people_cost[self.people[i]]                      
+        return h
 
 class Frontier(object):
     """
