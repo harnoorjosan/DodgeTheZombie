@@ -11,10 +11,53 @@ class Zombie_problem(object):
         start = ('left', 'left', 'left', 'left', 'left') # Everyone on the left side of the bridge
         return (start)
     
-    
     def is_goal(self, node):
         """is True if `node` is a goal"""
         return node == ('right', 'right', 'right', 'right', 'right') # Everyone on the right side of the bridge
+    
+    def neighbors(self, node):
+        """returns a list of the arcs for the neighbors of `node`"""
+        neighbors = []
+        current_state = list(node) 
+        flash_pos = current_state[-1] # Last element in  node is postion of flashlight
+        if flash_pos == 'left': # select two people from left to go to right
+            for i in range(len(current_state)-1):
+                for j in range(i + 1, len(current_state)-1):
+                    
+                    if current_state[i] == flash_pos or current_state[j] == flash_pos: 
+                            new_state = list(current_state)
+                            new_state[i] = 'right' # changing their position to right
+                            new_state[j] = 'right'
+                            new_state[-1] = 'right'
+                            neighbors.append(tuple(new_state))
+        else : # select one person form right to go back to left
+            for i in range(len(current_state)-1):
+                curr_direction = 'right' 
+                if current_state[i] == curr_direction:
+                    new_state = list(current_state)
+                    new_state[i] = 'left' # changing their position to left
+                    new_state[-1] = 'left'
+                    neighbors.append(tuple(new_state))
+        return neighbors          
+    
+    def arc_cost(self, arc):
+        """Returns the cost of `arc`"""
+        # Handled in cost()
+        return 
+
+    def cost(self, path):
+        """Returns the cost of `path`""" 
+        cost = 0  
+
+        for i in range(1, len(path)):  # arc number excluding first arc
+            prev_arc = path[i-1] # setting previous arc
+            cost_list = [] 
+            for j in range(4):  # person number
+                if path[i][j] != prev_arc[j]: # checking which person changed positions
+                    cost_list.append(self.people_cost[self.people[j]])
+            cost += max(cost_list)
+                    
+        return cost
 
 class Frontier(object):
     """
