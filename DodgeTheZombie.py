@@ -67,6 +67,26 @@ class Zombie_problem(object):
             if current_state[i] == 'left': # for all persons on left check their estimate cost to move to right            
                     h += self.people_cost[self.people[i]]                      
         return h
+    
+    def search(self):
+        """Return a solution path"""      
+        start = self.start_node()
+        frontier = Frontier()
+        frontier.add([start], self.heuristic(start))
+       
+        while not frontier.is_empty():
+            path = frontier.remove() # Removing f minimizing path        
+            current_node = path[-1]
+            if self.is_goal(current_node): 
+                return path # goal node
+            
+            for neighbor in self.neighbors(current_node):
+                new_path = list(path) 
+                new_path.append(neighbor)
+                new_prioity = self.cost(new_path) + self.heuristic(neighbor) 
+                frontier.add(new_path, new_prioity) # Adding new path to frontier
+ 
+        return None
 
 class Frontier(object):
     """
@@ -99,7 +119,12 @@ def unit_tests():
     pass
 
 def main():
-    pass
+    p = Zombie_problem()
+    soln = p.search()
+    if soln:
+        print("Solution found (cost=%s)\n%s" % (p.cost(soln), soln))
+    else:
+        raise RuntimeError("Empty solution")
 
 if __name__ == '__main__':
     main()
