@@ -116,9 +116,26 @@ def unit_tests():
     Some trivial tests to check that the implementation even runs.
     Feel free to add additional tests.
     """
-    pass
+    print("testing...")
+    p = Zombie_problem()
+    assert p.start_node() is not None
+    
+    assert not p.is_goal(p.start_node())
+    
+    assert p.heuristic(p.start_node()) >= 0
+    
+
+    ns = p.neighbors(p.start_node())
+    assert len(ns) > 0
+    
+
+    soln = p.search()
+    assert p.cost(soln) > 0
+    
+    print("tests ok")
 
 def main():
+    unit_tests()
     p = Zombie_problem()
     soln = p.search()
     if soln:
